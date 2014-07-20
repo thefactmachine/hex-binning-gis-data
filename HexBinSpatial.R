@@ -1,5 +1,6 @@
 library('hexbin')
 library("classInt")
+library("RCurl")
 rm(list=ls())
 #=====================================================================
 fnZero <- function(fltNumber) {
@@ -8,9 +9,10 @@ fnZero <- function(fltNumber) {
     else {fltReturn <- fltNumber}
     return(fltReturn)
 }
-setwd('/Users/zurich/Google Drive/R-StatisticalLanguage/SpatialProjects/HexBin')
-#loads datafrmae 'df'
-load('popDensity.RData')
+#get the file from github. getURL takes care of R's https issue
+x <- getURL("https://raw.githubusercontent.com/thefactmachine/hex-binning-gis-data/master/xyz.csv")
+df <- read.csv(text = x)
+
 # clean up negative number, set them to zero.
 df$Z <- sapply(df$Z, fnZero)
 #clear existing plot
@@ -39,6 +41,7 @@ pushHexport(hvp)
 grid.hexagons(hbin,style='colorscale',pen=0,border= 'white',use.count=FALSE,
               minarea = 0.04, maxarea = 1, mincnt = 1, maxcnt = 3000,
               cell.at=mtrans, colramp=cr, colorcut= ci$brks)
+
 popViewport()
 
 #copy device output to pdf
